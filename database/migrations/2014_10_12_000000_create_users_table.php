@@ -42,6 +42,7 @@ return new class extends Migration
             $table->foreign('golongan_id')->references('id')->on('data_referensi');
             $table->foreign('jenis_kelamin_id')->references('id')->on('data_referensi');
             $table->foreign('role_id')->references('id')->on('data_referensi');
+            $table->foreign('alamat_id')->references('id')->on('alamat');
         });
     }
 
