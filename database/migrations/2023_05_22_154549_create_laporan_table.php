@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('laporan', function (Blueprint $table) {
-            $table->id('laporan_id');
-            $table->integer('laporan_judul');
-            $table->integer('laporan_perihal');
-            $table->string('laporan_user_nomor_pokok_anggota_pgri');
-            $table->string('laporan_tujuan');
+            $table->id('id');
+            $table->integer('judul');
+            $table->integer('perihal');
+            $table->unsignedBigInteger('user_id');
+            $table->string('tujuan');
             $table->boolean('status');
             $table->timestamps();
 
-            $table->foreign('laporan_user_nomor_pokok_anggota_pgri')->references('user_npa_pgri')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('materi_bimbel', function (Blueprint $table) {
+        Schema::create('donatur', function (Blueprint $table) {
             $table->id('id');
-            $table->text('deskripsi');
-            $table->unsignedBigInteger('list_bimbel_id');
             $table->unsignedBigInteger('user_id');
-            $table->text('file');
+            $table->unsignedBigInteger('donasi_id');
+            $table->text('catatan');
+            $table->integer('nominal');
+            $table->text('bukti_pembayaran');
+            $table->boolean('valid');
             $table->boolean('status');
             $table->timestamps();
 
-            $table->foreign('list_bimbel_id')->references('id')->on('list_bimbel');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('donasi_id')->references('id')->on('donasi');
         });
     }
 
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('materi_bimbel');
+        Schema::dropIfExists('donasi');
     }
 };

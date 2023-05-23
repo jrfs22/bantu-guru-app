@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pembimbing_karya_tulis_online', function (Blueprint $table) {
-            $table->id('pembimbing_kto_id');
-            $table->string('pembimbing_kto_unpa_pgri');
+            $table->id('id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('pembimbing_menu_id');
             $table->boolean('status');
             $table->timestamps();
 
-            $table->foreign('pembimbing_kto_unpa_pgri')->references('user_npa_pgri')->on('users');
-            $table->foreign('pembimbing_menu_id')->references('menu_pembimbing_karya_tulis_id')->on('menu_pembimbing_karya_tulis');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('pembimbing_menu_id')->references('id')->on('menu_pembimbing_karya_tulis');
         });
     }
 

@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('materi_bimbel', function (Blueprint $table) {
+        Schema::create('kompetensi', function (Blueprint $table) {
             $table->id('id');
+            $table->string('nama');
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
+            $table->string('tipe');
+            $table->integer('max_peserta');
             $table->text('deskripsi');
-            $table->unsignedBigInteger('list_bimbel_id');
-            $table->unsignedBigInteger('user_id');
-            $table->text('file');
+            $table->text('foto');
             $table->boolean('status');
             $table->timestamps();
-
-            $table->foreign('list_bimbel_id')->references('id')->on('list_bimbel');
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('materi_bimbel');
+        Schema::dropIfExists('kegiatan_kompetensi');
     }
 };

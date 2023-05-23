@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengajar_bimbel', function (Blueprint $table) {
-            $table->id('pengajar_bimbel_id');
-            $table->string('pengajar_bimbel_user_npa_pgri');
-            $table->unsignedBigInteger('pengajar_bimbel_list_bimbel_id');
+            $table->id('id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('list_bimbel_id');
             $table->boolean('status');
             $table->timestamps();
 
-            $table->foreign('pengajar_bimbel_user_npa_pgri')->references('user_npa_pgri')->on('users');
-            $table->foreign('pengajar_bimbel_list_bimbel_id')->references('list_bimbel_id')->on('list_bimbel');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('list_bimbel_id')->references('id')->on('list_bimbel');
         });
     }
 

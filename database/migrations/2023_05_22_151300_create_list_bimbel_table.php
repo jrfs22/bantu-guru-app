@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('list_bimbel', function (Blueprint $table) {
-            $table->id('list_bimbel_id');
-            $table->string('list_bimbel_nama');
-            $table->text('list_bimbel_gambar');
+            $table->id('id');
+            $table->string('nama');
+            $table->text('gambar');
             $table->boolean('status');
             $table->timestamps();
         });

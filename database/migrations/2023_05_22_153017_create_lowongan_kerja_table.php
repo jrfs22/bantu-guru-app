@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('lowongan_kerja', function (Blueprint $table) {
-            $table->id('lowongan_kerja_id');
-            $table->text('lowongan_kerja_nama');
-            $table->text('lowongan_kerja_file');
-            $table->string('lowongan_kerja_user_npa_pgri');
-            $table->integer('lowongan_kerja_view');
+            $table->id('id');
+            $table->text('nama');
+            $table->text('file');
+            $table->unsignedBigInteger('user_id');
+            $table->integer('view');
             $table->boolean('status');
-            $table->string('lowongan_kerja_validasi_by');
+            $table->unsignedBigInteger('validasi_by');
             $table->timestamps();
 
-            $table->foreign('lowongan_kerja_user_npa_pgri')->references('user_npa_pgri')->on('users');
-            $table->foreign('lowongan_kerja_validasi_by')->references('user_npa_pgri')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('validasi_by')->references('id')->on('users');
         });
     }
 

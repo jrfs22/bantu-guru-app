@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('list_kegiatan_kompetensi', function (Blueprint $table) {
-            $table->id('list_kegiatan_kompetensi_id');
-            $table->unsignedBigInteger('list_kegiatan_kompe_kegiatan_id');
-            $table->string('list_kegiatan_user_npa_pgri');
+        Schema::create('list_kompetensi', function (Blueprint $table) {
+            $table->id('id');
+            $table->unsignedBigInteger('kompetensi_id');
+            $table->unsignedBigInteger('user_id');
             $table->boolean('status');
             $table->timestamps();
 
-            $table->foreign('list_kegiatan_kompe_kegiatan_id')->references('kegiatan_kompetensi_id')->on('kegiatan_kompetensi');
-            $table->foreign('list_kegiatan_user_npa_pgri')->references('user_npa_pgri')->on('users');
+            $table->foreign('kompetensi_id')->references('id')->on('kompetensi');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

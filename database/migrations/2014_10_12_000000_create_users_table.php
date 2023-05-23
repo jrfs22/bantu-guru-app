@@ -12,30 +12,36 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id('user_id');
-            $table->text('user_email')->unique();
-            $table->text('user_password');
-            $table->string('user_npa_pgri')->unique();
-            $table->string('user_registrasi_bantu_guru');
-            $table->string('user_nik');
-            $table->text('user_nama_lengkap');
-            $table->string('user_nip');
-            $table->string('user_nuptk');
-            $table->text('user_gelar_depan');
-            $table->text('user_gelar_belakang');
-            $table->integer('user_status_pegawai_id');
-            $table->integer('user_jenis_pegawai_id');
-            $table->integer('user_golongan_id');
-            $table->string('user_instansi');
-            $table->string('user_no_hp');
-            $table->integer('user_alamat_id');
-            $table->string('user_nama_alamat');
-            $table->integer('user_jenis_kelamin_id');
-            $table->boolean('user_guru_or_masyarakat');
-            $table->text('user_gambar');
+            $table->id('id');
+            $table->text('email')->unique();
+            $table->text('password');
+            $table->string('npa_pgri')->unique();
+            $table->string('registrasi_bantu_guru');
+            $table->string('nik');
+            $table->text('nama_lengkap');
+            $table->string('nip');
+            $table->string('nuptk');
+            $table->text('gelar_depan');
+            $table->text('gelar_belakang');
+            $table->unsignedBigInteger('status_pegawai_id');
+            $table->unsignedBigInteger('jenis_pegawai_id');
+            $table->unsignedBigInteger('golongan_id');
+            $table->string('instansi');
+            $table->string('no_hp');
+            $table->unsignedBigInteger('alamat_id');
+            $table->string('nama_alamat');
+            $table->unsignedBigInteger('jenis_kelamin_id');
+            $table->unsignedBigInteger('role_id');
+            $table->text('gambar');
             $table->boolean('status');
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('status_pegawai_id')->references('id')->on('data_referensi');
+            $table->foreign('jenis_pegawai_id')->references('id')->on('data_referensi');
+            $table->foreign('golongan_id')->references('id')->on('data_referensi');
+            $table->foreign('jenis_kelamin_id')->references('id')->on('data_referensi');
+            $table->foreign('role_id')->references('id')->on('data_referensi');
         });
     }
 

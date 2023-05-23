@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('data_referensi', function (Blueprint $table) {
-            $table->id('data_referensi');
-            $table->string('data_referensi_key');
-            $table->string('data_referensi_value');
-            $table->string('data_referensi_deskripsi');
+            $table->id('id');
+            $table->string('key');
+            $table->string('value');
+            $table->string('deskripsi');
             $table->timestamps();
         });
     }

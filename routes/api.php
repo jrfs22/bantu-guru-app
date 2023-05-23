@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\api\LowonganKerjaController;
+use App\Http\Controllers\api\DonasiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/lowongan-kerja', [LowonganKerjaController::class, 'index']);
+Route::get('/donasi', [DonasiController::class, 'index']);
+Route::get('/donasi/{id}', [DonasiController::class, 'show']);
