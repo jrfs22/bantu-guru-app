@@ -3,8 +3,10 @@
 namespace App\Models\api;
 
 use App\Models\api\DonasiModel;
+use App\Models\api\DonaturModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class DonasiModel extends Model
@@ -25,6 +27,6 @@ class DonasiModel extends Model
      */
     public function donatur(): HasMany
     {
-        return $this->hasMany(DonasiModel::class, 'donasi_id', 'kegiatan_donasi_id');
+        return $this->hasMany(DonaturModel::class, 'donasi_id', 'id');
     }
 }

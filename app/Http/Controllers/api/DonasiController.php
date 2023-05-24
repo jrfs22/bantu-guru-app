@@ -6,18 +6,19 @@ use Illuminate\Http\Request;
 use App\Models\api\DonasiModel;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DonasiResource;
+use App\Http\Resources\DonasiDetailResource;
 
 class DonasiController extends Controller
 {
     public function index()
     {
         $donasi = DonasiModel::all();
-        return DonasiResource::collection($donasi->loadMissing('donatur:id,user_id,nominal'));
+        return DonasiResource::collection($donasi->loadMissing('donatur:id,donasi_id,nominal'));
     }
 
-    public function show($id)
+    public function getById($id)
     {
-        $donasi = DonasiModel::findOrFail($id);
-        return response()->json(['data' => $donasi]);
+        $donasi = DonasiModel::with('donatur:id,donasi_id,nominal,user_id')->findOrFail($id);
+        return new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id'));
     }
 }
