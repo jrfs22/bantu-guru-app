@@ -21,4 +21,11 @@ class DonasiController extends Controller
         $donasi = DonasiModel::with('donatur:id,donasi_id,nominal,user_id')->findOrFail($id);
         return new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id'));
     }
+
+    public function store(Request $request)
+    {
+        // $validated = $request->validate([
+        //     'catatan' => 'required'
+        // ]);
+    }
 }

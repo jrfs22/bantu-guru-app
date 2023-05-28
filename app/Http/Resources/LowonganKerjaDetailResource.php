@@ -15,11 +15,11 @@ class LowonganKerjaDetailResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'lowongan_kerja_id' => $this->lowongan_kerja_id,
-            'lowongan_kerja_nama' => $this->lowongan_kerja_nama,
-            'lowongan_kerja_file' => $this->lowongan_kerja_file,
-            'lowongan_kerja_user_npa_pgri' => $this->lowongan_kerja_user_npa_pgri,
-            'lowongan_kerja_view'=> $this->lowongan_kerja_view,
+            'id' => $this->id,
+            'nama' => $this->nama,
+            'image' => $this->image,
+            'view'=> $this->view,
+            'user_id' => $this->user_id,
             'user' => $this->whenLoaded('user'),
             'validasi' => $this->whenLoaded('validasi')
         ];

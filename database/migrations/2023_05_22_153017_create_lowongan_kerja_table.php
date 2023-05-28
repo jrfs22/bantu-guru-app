@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('lowongan_kerja', function (Blueprint $table) {
             $table->id('id');
             $table->text('nama');
-            $table->text('file');
+            $table->text('gambar');
             $table->unsignedBigInteger('user_id');
             $table->integer('view');
             $table->boolean('status');

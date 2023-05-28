@@ -16,6 +16,12 @@ use App\Http\Controllers\api\DonasiController;
 |
 */
 
-Route::get('/lowongan-kerja', [LowonganKerjaController::class, 'index']);
+// Route::apiResource('/loker', [LowonganKerjaController::class, 'index']);
+// Route::post('/loker', [LowonganKerjaController::class, 'store']);
+// Route::put('/loker/{id}', [LowonganKerjaController::class, 'update']);
+// Route::delete('/loker/{id}', [LowonganKerjaController::class, 'destroy']);
+Route::apiResource('/loker', LowonganKerjaController::class);
+
 Route::get('/donasi', [DonasiController::class, 'index']);
 Route::get('/donasi/{id}', [DonasiController::class, 'getById']);
+Route::post('/donasi', [DonasiController::class, 'store']);
