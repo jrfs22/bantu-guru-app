@@ -13,7 +13,7 @@ class DonaturModel extends Model
     protected $table = 'donatur';
     protected $fillable = [
         'user_id', 'donasi_id', 'catatan', 
-        'nominal', 'bukti_pembayaran'
+        'nominal', 'bukti_pembayaran', 'valid', 'status'
     ];
 
     /**
@@ -26,5 +26,15 @@ class DonaturModel extends Model
         return $this->belongsTo(User::class, 'user_id', 'id')->select(
             'id', 'nama_lengkap', 'gelar_depan', 'gelar_belakang'
         );
+    }
+
+    /**
+     * Get all of the donasi for the DonaturModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function donasi(): belongsTo
+    {
+        return $this->belongsTo(DonasiModel::class, 'donasi_id', 'id')->select('id', 'nama');
     }
 }
