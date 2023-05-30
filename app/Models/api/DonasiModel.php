@@ -2,7 +2,6 @@
 
 namespace App\Models\api;
 
-use App\Models\api\DonasiModel;
 use App\Models\api\DonaturModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;

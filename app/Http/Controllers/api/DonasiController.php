@@ -3,24 +3,31 @@
 namespace App\Http\Controllers\api;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\api\DonasiModel;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\DonasiResource;
+use App\Http\Controllers\BaseController;
+use Illuminate\Support\Facades\File; 
+use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\DonasiDetailResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class DonasiController extends Controller
+class DonasiController extends BaseController
 {
     public function index()
     {
         try{
             $donasi = DonasiModel::all();
-            return DonasiResource::collection($donasi->loadMissing('donatur:id,user_id,donasi_id,nominal'));
+            return $this->sendResponse(
+                DonasiResource::collection($donasi->loadMissing('donatur:id,user_id,donasi_id,nominal')),
+                'Data found'
+            );
         }catch(ModelNotFoundException $exception){
-            return response()->json([
-                'status' => false,
-                'message' => 'data not found'
-            ], 404);
+            return $this->sendError(
+                'Data not found',
+                $exception->getMessage(),
+                404
+            );
         }
     }
 
@@ -28,25 +35,36 @@ class DonasiController extends Controller
     {
         try{
             $donasi = DonasiModel::with('donatur:id,donasi_id,nominal,user_id')->findOrFail($id);
-            return new DonasiDetailResource(
-                $donasi->loadMissing('donatur:id,donasi_id,nominal,user_id')
+            return $this->sendResponse(
+                new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id')),
+                'Data found'
             );
         }catch(ModelNotFoundException $exception){
-            return response()->json([
-                'status' => false,
-                'message' => 'data not found'
-            ], 404);
+            return $this->sendError(
+                'Data not found',
+                $exception->getMessage(),
+                404
+            );
         }
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required|max:255',
-            'deskripsi' => 'required|max:1000',
-            'tanggal' => 'required',
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|string|max:255',
+            'deskripsi' => 'required|string|max:1000',
+            'tanggal' => 'required|date',
             'gambar' => 'required|image|mimes:jpeg,jpeg,png|max:250'
         ]);
+        
+        if($validator->fails()){
+            return $this->sendError(
+                'Error found',
+                $validator->errors(),
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
         $newNameOfImage = $request->gambar->hashName();
         $donasi = DonasiModel::create([
             'nama' => $request->nama,
@@ -58,12 +76,10 @@ class DonasiController extends Controller
 
         if($donasi){
             $request->gambar->move('storage/image/donasi', $newNameOfImage);
-            return new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id'));
-        }else{
-            return response()->json([
-                'status' => false,
-                'message' => 'Something wrong with your data'
-            ], 504);
+            return $this->sendResponse(
+                new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id')),
+                'Data uploaded successfully'
+            );
         }
     }
 

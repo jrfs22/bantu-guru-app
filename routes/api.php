@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\DonasiController;
 use App\Http\Controllers\api\DonaturController;
+use App\Http\Controllers\api\KompetensiController;
 use App\Http\Controllers\api\LowonganKerjaController;
 
 /*
@@ -33,3 +34,13 @@ Route::delete('/donasi/{id}', [DonasiController::class, 'destroy']);
 
 // Donatur routing
 Route::post('/donatur/{donasi_id}', [DonaturController::class, 'store']);
+
+// Routing kompetensi
+Route::get('/kompetensi', [KompetensiController::class, 'index']);
+
+Route::fallback(function(){
+    return response()->json([
+        'success' => false,
+        'message' => 'Route not found'
+    ], 500);
+});

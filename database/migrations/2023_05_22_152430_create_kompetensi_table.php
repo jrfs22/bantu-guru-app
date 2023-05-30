@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('tipe');
             $table->integer('max_peserta');
             $table->text('deskripsi');
-            $table->text('foto');
+            $table->text('poster');
             $table->boolean('status');
             $table->timestamps();
         });
