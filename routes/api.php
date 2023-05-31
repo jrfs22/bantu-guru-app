@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\AuthenticationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\DonasiController;
@@ -17,12 +18,16 @@ use App\Http\Controllers\api\LowonganKerjaController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+// Authentication routing
+Route::post('/login', [AuthenticationController::class, 'login']);
+
 // Lowongan kerja routing
 Route::get('/loker', [LowonganKerjaController::class, 'index']);
 Route::get('/loker/{id}', [LowonganKerjaController::class, 'getById']);
 Route::post('/loker', [LowonganKerjaController::class, 'store']);
 Route::put('/loker/{id}', [LowonganKerjaController::class, 'update']);
 Route::delete('/loker/{id}', [LowonganKerjaController::class, 'destroy']);
+
 // Donasi routing
 Route::get('/donasi', [DonasiController::class, 'index']);
 Route::get('/donasi/{id}', [DonasiController::class, 'getById']);

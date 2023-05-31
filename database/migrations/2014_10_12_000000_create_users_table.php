@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->text('email')->unique();
-            $table->text('password');
+            $table->text('password')->nullable();
             $table->string('npa_pgri')->unique();
             $table->string('registrasi_bantu_guru');
             $table->string('nik');
