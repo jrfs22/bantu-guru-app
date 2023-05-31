@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id('id');
+            $table->uuid('id')->primary();
             $table->text('email')->unique();
             $table->text('password');
             $table->string('npa_pgri')->unique();
@@ -21,19 +21,18 @@ return new class extends Migration
             $table->text('nama_lengkap');
             $table->string('nip');
             $table->string('nuptk');
-            $table->text('gelar_depan');
-            $table->text('gelar_belakang');
-            $table->unsignedBigInteger('status_pegawai_id');
-            $table->unsignedBigInteger('jenis_pegawai_id');
-            $table->unsignedBigInteger('golongan_id');
-            $table->string('instansi');
+            $table->text('gelar_depan')->nullable();
+            $table->text('gelar_belakang')->nullable();
+            $table->uuid('status_pegawai_id')->nullable();
+            $table->uuid('jenis_pegawai_id')->nullable();
+            $table->uuid('golongan_id')->nullable();
+            $table->string('instansi')->nullable();
             $table->string('no_hp');
-            $table->unsignedBigInteger('alamat_id');
-            $table->string('nama_alamat');
-            $table->unsignedBigInteger('jenis_kelamin_id');
-            $table->unsignedBigInteger('role_id');
+            $table->uuid('alamat_id');
+            $table->uuid('jenis_kelamin_id');
+            $table->uuid('role_id');
             $table->text('gambar');
-            $table->boolean('status');
+            $table->boolean('status')->default(0);
             $table->rememberToken();
             $table->timestamps();
 

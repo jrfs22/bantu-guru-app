@@ -23,7 +23,6 @@ Route::get('/loker/{id}', [LowonganKerjaController::class, 'getById']);
 Route::post('/loker', [LowonganKerjaController::class, 'store']);
 Route::put('/loker/{id}', [LowonganKerjaController::class, 'update']);
 Route::delete('/loker/{id}', [LowonganKerjaController::class, 'destroy']);
-
 // Donasi routing
 Route::get('/donasi', [DonasiController::class, 'index']);
 Route::get('/donasi/{id}', [DonasiController::class, 'getById']);

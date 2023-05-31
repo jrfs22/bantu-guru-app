@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kecamatan', function (Blueprint $table) {
-            $table->id('id');
+            $table->uuid('id')->primary();
             $table->string('nama');
-            $table->unsignedBigInteger('kota_id');
+            $table->uuid('kota_id');
             $table->timestamps();
 
             $table->foreign('kota_id')->references('id')->on('kota');

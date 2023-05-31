@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 
 class BaseController extends Controller
 {
-    protected function sendResponse($result, $message)
+        protected function sendResponse($result, $message)
     {
         $response = [
             'success' => true,

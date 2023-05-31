@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kompetensi', function (Blueprint $table) {
-            $table->id('id');
+            $table->uuid('id')->primary();
             $table->string('nama');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('tipe');
             $table->integer('max_peserta');
             $table->text('deskripsi');
-            $table->text('poster');
-            $table->boolean('status');
+            $table->text('gambar');
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }

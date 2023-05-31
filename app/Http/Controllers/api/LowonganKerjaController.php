@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\api;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\File; 
-use App\Models\api\LowonganKerjaModel;
+use App\Http\Controllers\BaseController;
 use App\Http\Resources\LowonganKerjaDetailResource;
+use App\Models\api\LowonganKerjaModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
-class LowonganKerjaController extends Controller
+class LowonganKerjaController extends BaseController
 {
     public function index()
     {

@@ -4,12 +4,16 @@ namespace App\Http\Controllers\api;
 
 use Illuminate\Http\Request;
 use App\Models\api\KompetensiModel;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Resources\KompetensiResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class KompetensiController extends Controller
+class KompetensiController extends BaseController
 {
+    /**
+     * Summary of index
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function index()
     {
         try{
@@ -23,6 +27,11 @@ class KompetensiController extends Controller
         }
     }
 
+    /**
+     * Summary of store
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([

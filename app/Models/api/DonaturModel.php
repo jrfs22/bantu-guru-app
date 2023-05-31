@@ -3,18 +3,31 @@
 namespace App\Models\api;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class DonaturModel extends Model
 {
     use HasFactory;
+    public $incrementing = false;
+
     protected $table = 'donatur';
     protected $fillable = [
         'user_id', 'donasi_id', 'catatan', 
         'nominal', 'bukti_pembayaran', 'valid', 'status'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function($model){
+            if($model->getKey() == null){
+                $model->setAttribute($model->getKeyName(), Str::orderedUuid()->toString());
+            }
+        });
+    }
 
     /**
      * Get the user that owns the DonaturModel

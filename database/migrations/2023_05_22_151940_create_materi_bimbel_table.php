@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('materi_bimbel', function (Blueprint $table) {
-            $table->id('id');
+            $table->uuid('id')->primary();
             $table->text('deskripsi');
-            $table->unsignedBigInteger('list_bimbel_id');
-            $table->unsignedBigInteger('user_id');
+            $table->uuid('list_bimbel_id');
+            $table->uuid('user_id');
             $table->text('file');
-            $table->boolean('status');
+            $table->boolean('status')->default(0);
             $table->timestamps();
 
             $table->foreign('list_bimbel_id')->references('id')->on('list_bimbel');

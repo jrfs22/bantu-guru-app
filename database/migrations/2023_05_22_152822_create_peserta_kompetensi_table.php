@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('list_kompetensi', function (Blueprint $table) {
-            $table->id('id');
-            $table->unsignedBigInteger('kompetensi_id');
-            $table->unsignedBigInteger('user_id');
-            $table->boolean('status');
+        Schema::create('peserta_kompetensi', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('kompetensi_id');
+            $table->uuid('user_id');
+            $table->boolean('status')->default(0);
             $table->timestamps();
 
             $table->foreign('kompetensi_id')->references('id')->on('kompetensi');

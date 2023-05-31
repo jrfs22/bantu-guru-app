@@ -12,12 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('alamat', function (Blueprint $table) {
-            $table->id('id');
-            $table->unsignedBigInteger('kecamatan_id');
-            $table->unsignedBigInteger('kota_id');
-            $table->unsignedBigInteger('provinsi_id');
-            $table->unsignedBigInteger('kode_pos');
-            $table->rememberToken();
+            $table->uuid('id')->primary();
+            $table->uuid('kecamatan_id');
+            $table->uuid('kota_id');
+            $table->uuid('provinsi_id');
+            $table->integer('kode_pos');
             $table->timestamps();
 
             $table->foreign('kecamatan_id')->references('id')->on('kecamatan');
