@@ -16,21 +16,16 @@ class AuthenticationController extends BaseController
     public function login(Request $request)
     {
         $validated = Validator::make($request->all(), [
+            'id' => 'required',
             'email' => 'required|email'
         ]);
 
         // Check email at databases
-        $user = User::where('email', $request->email)->first();
-        if(empty($user) && empty($request->uid)){
-            return redirect()->route('/register');
+        $user = User::where('email', $request->email)->where('id', $request->id)->first();
+        if(empty($user)){
+            
         }else{
-            if($request->uid == $user->id){
-                return $user->createToken('login')->plainTextToken();
-            }else{
-                return $this->sendError(
-                    'Uid not found'
-                );
-            }
+            return $user->createToken('login')->plainTextToken();
         }
     }
 

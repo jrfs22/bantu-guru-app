@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('email')->unique();
             $table->text('password')->nullable();
             $table->string('npa_pgri')->nullable();
-            $table->string('nik');
+            $table->string('nik')->nullable();
             $table->text('nama_lengkap');
             $table->string('nip')->nullable();
             $table->string('nuptk')->nullable();
@@ -26,9 +26,9 @@ return new class extends Migration
             $table->uuid('jenis_pegawai_id')->nullable();
             $table->uuid('golongan_id')->nullable();
             $table->string('instansi')->nullable();
-            $table->string('no_hp');
-            $table->uuid('jenis_kelamin_id');
-            $table->uuid('role_id');
+            $table->string('no_hp')->nullable();
+            $table->uuid('jenis_kelamin_id')->nullable();
+            $table->uuid('role_id')->nullable();
             $table->text('gambar');
             $table->boolean('status')->default(0);
             $table->rememberToken();
