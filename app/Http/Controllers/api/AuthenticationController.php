@@ -20,12 +20,43 @@ class AuthenticationController extends BaseController
             'email' => 'required|email'
         ]);
 
+        if($validated->fails()){
+            return $this->sendError(
+                'Validate error',
+                $validated->errors()
+            );
+        }
+
         // Check email at databases
         $user = User::where('email', $request->email)->where('id', $request->id)->first();
         if(empty($user)){
-            
+            $validated = Validator::make($request->all(), [
+                'nama_lengkap' => 'required|string',
+                'gambar' => 'required'
+            ]);
+            try{
+                $newUser = User::create([
+                    'id' => $request->id,
+                    'email' => $request->email,
+                    'nama_lengkap' => $request->nama_lengkap,
+                    'gambar' => $request->gambar
+                ]);
+
+                if($newUser){
+                    $newUser->createToken('new user')->plainTextToken;
+                    return $this->sendResponse(
+                        $newUser,
+                        'New user has been registerd'
+                    );
+                }
+            }catch(QueryException $exception){
+                return $this->sendError(
+                    'User create error',
+                    $exception->getMessage()
+                );
+            }
         }else{
-            return $user->createToken('login')->plainTextToken();
+            return $user->createToken('login')->plainTextToken;
         }
     }
 
