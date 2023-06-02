@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\AuthenticationController;
+use App\Http\Controllers\api\ListBimbelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\DonasiController;
@@ -47,6 +48,15 @@ Route::post('/kompetensi', [KompetensiController::class, 'store']);
 Route::put('/kompetensi/{id}', [KompetensiController::class, 'update']);
 Route::delete('/kompetensi/{id}', [KompetensiController::class, 'destroy']);
 
+// Routing Peserta kompetensi
+
+
+// Routing list bimbel
+Route::get('list-bimbel', [ListBimbelController::class, 'index']);
+Route::get('list-bimbel/{id}', [ListBimbelController::class, 'getById']);
+Route::post('list-bimbel', [ListBimbelController::class, 'store']);
+Route::put('list-bimbel/{id}', [ListBimbelController::class, 'update']);
+Route::delete('list-bimbel/{id}', [ListBimbelController::class, 'destroy']);
 
 Route::any('{url}', function(){
     return response()->json([
