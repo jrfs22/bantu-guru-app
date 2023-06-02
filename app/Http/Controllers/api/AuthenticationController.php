@@ -43,7 +43,7 @@ class AuthenticationController extends BaseController
                 ]);
 
                 if($newUser){
-                    $newUser->createToken('new user')->plainTextToken;
+                    $newUser->createToken('new user login')->plainTextToken;
                     return $this->sendResponse(
                         $newUser,
                         'New user has been registerd'
@@ -56,7 +56,16 @@ class AuthenticationController extends BaseController
                 );
             }
         }else{
-            return $user->createToken('login')->plainTextToken;
+            if($user){
+                if($user->currentAccessToken()){
+                    return $this->sendResponse(
+                        $user->currentAccessToken(),
+                        'Tokens already exist'
+                    );
+                }else{
+                    return $user->createToken('login')->plainTextToken;
+                }
+            }
         }
     }
 

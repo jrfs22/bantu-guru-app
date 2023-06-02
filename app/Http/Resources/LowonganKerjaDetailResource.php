@@ -17,8 +17,7 @@ class LowonganKerjaDetailResource extends JsonResource
         return [
             'id' => $this->id,
             'nama' => $this->nama,
-            'image' => $this->image,
-            'view'=> $this->view,
+            'gambar' => $this->gambar,
             'user_id' => $this->user_id,
             'user' => $this->whenLoaded('user'),
             'validasi' => $this->whenLoaded('validasi')

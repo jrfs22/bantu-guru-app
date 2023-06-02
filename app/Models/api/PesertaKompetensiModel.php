@@ -10,9 +10,9 @@ class PesertaKompetensiModel extends Model
 {
     use HasFactory;
     public $incrementing = false;
-    protected $table = 'list_kompetensi';
+    protected $table = 'peserta_kompetensi';
     protected $fillable = [
-        'kompetensi_id', 'user_id', 'status'
+        'kompetensi_id', 'user_id'
     ];
 
     protected static function boot()

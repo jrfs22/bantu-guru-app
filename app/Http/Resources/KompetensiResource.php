@@ -24,7 +24,7 @@ class KompetensiResource extends JsonResource
             'tipe' => $this->tipe,
             'max_peserta' => $this->max_peserta,
             'deskripsi' => $this->deskripsi,
-            'poster' => $this->poster,
+            'gambar' => $this->gambar,
             'jumlah_peserta' => $this->whenLoaded('peserta', function () {
                 return count($this->peserta);
             })

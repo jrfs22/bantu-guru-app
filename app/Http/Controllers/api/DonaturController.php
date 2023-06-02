@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\api;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\api\DonaturModel;
@@ -28,28 +30,30 @@ class DonaturController extends BaseController
         }
 
         $newNameOfImage = $request->bukti_pembayaran->hashName();
-        $donatur = DonaturModel::create([
-            'user_id' => '994b4893-154a-42f2-8b35-1730b8263706',
-            'donasi_id' => $donasi_id,
-            'catatan' => $request->catatan,
-            'nominal' => $request->nominal,
-            'bukti_pembayaran' => $newNameOfImage
-        ]);
-
-        if($donatur){
-            $request->bukti_pembayaran->move('storage/image/donatur', $newNameOfImage);
-            return $this->sendResponse(
-                new DonaturResource($donatur->loadMissing([
-                    'user:id,nama_lengkap,gelar_depan,gelar_belakang',
-                    'donasi:id,nama'
-                ])),
-                ''
+        try{
+            $donatur = DonaturModel::create([
+                'user_id' => '2IFmIsMuOWWNyfbYE02xozhyZSY2',
+                'donasi_id' => $donasi_id,
+                'catatan' => $request->catatan,
+                'nominal' => $request->nominal,
+                'bukti_pembayaran' => $newNameOfImage
+            ]);
+    
+            if($donatur){
+                $request->bukti_pembayaran->move('storage/image/donatur', $newNameOfImage);
+                return $this->sendResponse(
+                    new DonaturResource($donatur->loadMissing([
+                        'user:id,nama_lengkap,gelar_depan,gelar_belakang',
+                        'donasi:id,nama'
+                    ])),
+                    'Create data successfully'
+                );
+            }
+        }catch(ModelNotFoundException | QueryException $exception){
+            return $this->sendError(
+                'Something wrong with your data',
+                $exception->getMessage()
             );
-        }else{
-            return response()->json([
-                'status' => false,
-                'message' => 'Something wrong with your data'
-            ], 504);
         }
     }
 }

@@ -42,10 +42,21 @@ Route::post('/donatur/{donasi_id}', [DonaturController::class, 'store']);
 
 // Routing kompetensi
 Route::get('/kompetensi', [KompetensiController::class, 'index']);
+Route::get('/kompetensi/{id}', [KompetensiController::class, 'getById']);
+Route::post('/kompetensi', [KompetensiController::class, 'store']);
+Route::put('/kompetensi/{id}', [KompetensiController::class, 'update']);
+Route::delete('/kompetensi/{id}', [KompetensiController::class, 'destroy']);
 
-Route::fallback(function(){
+
+Route::any('{url}', function(){
     return response()->json([
         'success' => false,
         'message' => 'Route not found'
     ], 500);
-});
+})->where('url', '.*');
+// Route::fallback(function(){
+//     return response()->json([
+//         'success' => false,
+//         'message' => 'Route not found'
+//     ], 500);
+// });

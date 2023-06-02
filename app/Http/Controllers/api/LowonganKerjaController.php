@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\api;
 
-use App\Http\Controllers\BaseController;
-use App\Http\Resources\LowonganKerjaDetailResource;
-use App\Models\api\LowonganKerjaModel;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use App\Models\api\LowonganKerjaModel;
+use Illuminate\Database\QueryException;
+use App\Http\Controllers\BaseController;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\LowonganKerjaDetailResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LowonganKerjaController extends BaseController
 {
@@ -15,15 +17,26 @@ class LowonganKerjaController extends BaseController
     {
         try{
             $lowongan_kerja = LowonganKerjaModel::all();
-            return LowonganKerjaDetailResource::collection($lowongan_kerja->loadMissing([
+            $data = LowonganKerjaDetailResource::collection($lowongan_kerja->loadMissing([
                 'user:id,nama_lengkap,gelar_depan,gelar_belakang',
                 'validasi:id,nama_lengkap,gelar_depan,gelar_belakang'
             ]));
-        }catch(ModelNotFoundException $exception){
-            return response()->json([
-                'status' => false,
-                'message' => 'Data not found'
-            ], 404);
+            if(count($lowongan_kerja) == 0){
+                return $this->sendResponse(
+                    'table has no data',
+                    $data
+                );
+            }else{
+                return $this->sendResponse(
+                    'Data found',
+                    $data
+                );
+            }
+        }catch(ModelNotFoundException | QueryException $exception){
+            return $this->sendError(
+                'Error found',
+                $exception->getMessage()
+            );
         }
     }
 
@@ -31,77 +44,114 @@ class LowonganKerjaController extends BaseController
     {
         try{
             $lowongan_kerja = LowonganKerjaModel::findOrFail($id);
-            return new LowonganKerjaDetailResource($lowongan_kerja->loadMissing([
-                'user:id,nama_lengkap,gelar_depan,gelar_belakang',
-                'validasi:id,nama_lengkap,gelar_depan,gelar_belakang'
-            ]));
+            return $this->sendResponse(
+                new LowonganKerjaDetailResource($lowongan_kerja->loadMissing([
+                    'user:id,nama_lengkap,gelar_depan,gelar_belakang',
+                    'validasi:id,nama_lengkap,gelar_depan,gelar_belakang'
+                ])),
+                'Data found'
+            );
         }catch(ModelNotFoundException $exception){
-            return response()->json([
-                'status' => false,
-                'message' => 'Data not found'
-            ], 404);
+            return $this->sendError(
+                'Error found',
+                $exception->getMessage()
+            );
         }        
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validated = Validator::make($request->all(), [
             'nama' => 'required|max:255',
-            'image' => 'required|image|mimes:jpeg,jpg,png|max:250'
+            'gambar' => 'required|image|mimes:jpeg,jpg,png|max:1024'
         ]);
 
-        $newNameOfImage = $request->image->hashName();
+        if($validated->fails()){
+            return $this->sendError(
+                'Validate error',
+                $validated->errors()
+            );
+        }
 
-        $loker = LowonganKerjaModel::create([
-            'nama' => $request->nama,
-            'image' => $newNameOfImage,
-            'user_id' => 1,
-            'status' => 0,
-            'validasi_by' => 1,
-            'view' => 0
-        ]);
+        $newNameOfImage = $request->gambar->hashName();
 
-        if($loker){
-            $request->image->move('storage/image/loker', $newNameOfImage);
-            return new LowonganKerjaDetailResource($loker->loadMissing('user:id,nama_lengkap'));
-        }else{
-            return response()->json([
-                'status' => false,
-                'message' => 'Insert data invalid'
-            ], 400);
+        try{
+            $loker = LowonganKerjaModel::create([
+                'nama' => $request->nama,
+                'gambar' => $newNameOfImage,
+                'user_id' => '2IFmIsMuOWWNyfbYE02xozhyZSY2'
+            ]);
+    
+            if($loker){
+                $request->gambar->move('storage/image/loker', $newNameOfImage);
+                return $this->sendResponse(
+                    new LowonganKerjaDetailResource($loker->loadMissing('user:id,nama_lengkap')),
+                    'Insert data successfully'
+                );
+            }
+        }catch(ModelNotFoundException | QueryException $exception){
+            return $this->sendError(
+                'Error found',
+                $exception->getMessage()
+            );
         }
     }
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'nama' => 'required|max:255',
+        $validated = Validator::make($request->all(), [
+            'nama' => 'required|max:255'
         ]);
 
+        if($validated->fails()){
+            return $this->sendError(
+                'Validate error',
+                $validated->errors()
+            );
+        }
+
+        $updateLoker = [
+            'nama' => $request->nama
+        ];
         try {
             $loker = LowonganKerjaModel::findOrFail($id);
-            if(empty($request->image)){
-                $loker->update([
-                    'nama' => $request->nama
-                ]);
+            $oldImage = $loker->gambar;
+            if(!$request->hasFile('gambar')){
+                $loker->update($updateLoker);
             }else{
-                $oldImage = $loker->image;
-                $newNameOfImage = $request->image->hashName();
-                $loker->update([
-                    'nama' => $request->nama,
-                    'image' => $newNameOfImage
-                ]); 
+                $validated = Validator::make($request->all(), [
+                    'gambar' => 'required|image|mimes:jpeg,jpg,png|max:1024'
+                ]);
+
+                if($validated->fails()){
+                    return $this->sendError(
+                        'Validate error',
+                        $validated->errors()
+                    );
+                }
+
+                $newNameOfImage = $request->gambar->hashName();
+                $updateLoker['gambar'] =$newNameOfImage;
+                $loker->update($updateLoker); 
     
                 if($loker){
-                    $request->image->move('storage/image/loker', $newNameOfImage);
+                    $request->gambar->move('storage/image/loker', $newNameOfImage);
                     $path = 'storage/image/loker/' . $oldImage;
                     if(File::exists($path)){
                         File::delete($path);
                     }
                 }
             }
-            return new LowonganKerjaDetailResource($loker->loadMissing('user:id,nama_lengkap'));
+
+            return $this->sendResponse(
+                new LowonganKerjaDetailResource($loker->loadMissing('user:id,nama_lengkap')),
+                'Update has succesfully'
+            );
         }catch(ModelNotFoundException $exception){
+            return $this->sendError(
+                'Error found',
+                $exception->getMessage()
+            );
         }
     }
     
@@ -110,12 +160,15 @@ class LowonganKerjaController extends BaseController
         try{
             $loker = LowonganKerjaModel::findOrfail($id);
             $loker->delete();
-            return new LowonganKerjaDetailResource($loker->loadMissing('user:id,nama_lengkap'));
-        }catch(ModelNotFoundException $exception){
-            return response()->json([
-                'status' => false,
-                'message' => 'Data not found'
-            ], 404);
+            return $this->sendResponse(
+                new LowonganKerjaDetailResource($loker->loadMissing('user:id,nama_lengkap')),
+                'Delete Lowongan Kerja successfully'
+            );
+        }catch(ModelNotFoundException | QueryException $exception){
+            return $this->sendError(
+                'Delete failed & id not found',
+                $exception->getMessage()
+            );
         }
     }
 }

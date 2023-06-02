@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\api\DonasiModel;
@@ -30,11 +31,10 @@ class DonasiController extends BaseController
                     'Data found'
                 );
             }
-        }catch(ModelNotFoundException $exception){
+        }catch(ModelNotFoundException | QueryException $exception){
             return $this->sendError(
                 'Data not found',
-                $exception->getMessage(),
-                404
+                $exception->getMessage()
             );
         }
     }
@@ -47,7 +47,7 @@ class DonasiController extends BaseController
                 new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id')),
                 'Data found'
             );
-        }catch(ModelNotFoundException $exception){
+        }catch(ModelNotFoundException | QueryException $exception){
             return $this->sendError(
                 'Table has no data and id not found',
                 $exception->getMessage(),
@@ -74,19 +74,26 @@ class DonasiController extends BaseController
         }
 
         $newNameOfImage = $request->gambar->hashName();
-        $donasi = DonasiModel::create([
-            'nama' => $request->nama,
-            'deskripsi' => $request->deskripsi,
-            'gambar' => $newNameOfImage,
-            'tanggal' => $request->tanggal,
-            'status' => 0
-        ]);
-
-        if($donasi){
-            $request->gambar->move('storage/image/donasi', $newNameOfImage);
-            return $this->sendResponse(
-                'Data uploaded successfully',
-                new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id'))
+        try{
+            $donasi = DonasiModel::create([
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'gambar' => $newNameOfImage,
+                'tanggal' => $request->tanggal,
+                'status' => 0
+            ]);
+    
+            if($donasi){
+                $request->gambar->move('storage/image/donasi', $newNameOfImage);
+                return $this->sendResponse(
+                    new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id')),
+                    'Data uploaded successfully'
+                );
+            }
+        }catch(ModelNotFoundException | QueryException $exception){
+            return $this->sendError(
+                'Error found',
+                $exception->getMessage()
             );
         }
     }
@@ -96,25 +103,27 @@ class DonasiController extends BaseController
         try{
             $donasi = DonasiModel::findOrFail($id);
             $oldImage = $donasi->gambar;
+            $validator = Validator::make($request->all(), [
+                'nama' => 'required|max:255',
+                'deskripsi' => 'required|max:1000',
+                'tanggal' => 'required'
+            ]);
+            
+            if($validator->fails()){
+                return $this->sendError(
+                    'Error found',
+                    $validator->errors(),
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+            // Variabel data
+            $updateDonasi = [
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'tanggal' => $request->tanggal
+            ];
             if(!$request->hasFile('gambar')){
-                $validator = Validator::make($request->all(), [
-                    'nama' => 'required|max:255',
-                    'deskripsi' => 'required|max:1000',
-                    'tanggal' => 'required'
-                ]);
-                
-                if($validator->fails()){
-                    return $this->sendError(
-                        'Error found',
-                        $validator->errors(),
-                        Response::HTTP_BAD_REQUEST
-                    );
-                }
-                $donasi->update([
-                    'nama' => $request->nama,
-                    'deskripsi' => $request->deskripsi,
-                    'tanggal' => $request->tanggal
-                ]);
+                $donasi->update($updateDonasi);
             }else{
                 $newNameOfImage = $request->gambar->hashName();
                 $validatorGambar = Validator::make($request->all(), [
@@ -128,12 +137,8 @@ class DonasiController extends BaseController
                         Response::HTTP_BAD_REQUEST
                     );
                 }
-                $donasi->update([
-                    'nama' => $request->nama,
-                    'deskripsi' => $request->deskripsi,
-                    'tanggal' => $request->tanggal,
-                    'gambar' => $newNameOfImage
-                ]);
+                $updateDonasi['gambar'] = $newNameOfImage;
+                $donasi->update($updateDonasi);
                 
                 if($donasi){
                     $request->gambar->move('storage/image/donasi', $newNameOfImage);
@@ -145,8 +150,8 @@ class DonasiController extends BaseController
             }
             
             return $this->sendResponse(
-                'Update data successfully',
                 new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id')),
+                'Update data successfully'
             ); 
         }catch(ModelNotFoundException $exception){
             return $this->sendError(
@@ -163,14 +168,13 @@ class DonasiController extends BaseController
             $donasi = DonasiModel::findOrFail($id);
             $donasi->delete();
             return $this->sendResponse(
-                'Data deleted successfully',
-                new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id'))
+                new DonasiDetailResource($donasi->loadMissing('donatur:id,donasi_id,nominal,user_id')),
+                'Data deleted successfully'
             );
         }catch(ModelNotFoundException $exception){
             return $this->sendError(
-                'Data not found',
-                $exception->getMessage(),
-                Response::HTTP_BAD_REQUEST
+                'Delete failed & id not found',
+                $exception->getMessage()
             );
         }
     }

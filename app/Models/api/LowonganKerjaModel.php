@@ -15,8 +15,7 @@ class LowonganKerjaModel extends Model
     public $incrementing = false;
     protected $table = 'lowongan_kerja';
     protected $fillable = [
-        'nama', 'image','view', 'status',
-        'validasi_by', 'user_id'
+        'nama', 'gambar', 'user_id'
     ];
 
     protected static function boot()

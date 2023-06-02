@@ -16,7 +16,7 @@ class KompetensiModel extends Model
     protected $fillable = [
         'nama', 'tanggal_mulai', 'tanggal_selesai',
         'jam_mulai', 'jam_selesai', 'tipe', 'max_peserta',
-        'deskripsi', 'poster', 'status'
+        'deskripsi', 'gambar'
     ];
     protected static function boot()
     {
