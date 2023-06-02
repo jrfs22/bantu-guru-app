@@ -181,11 +181,11 @@ class KompetensiController extends BaseController
             $kompetensi = KompetensiModel::findOrFail($id);
             $image = $kompetensi->gambar;
             $kompetensi->delete();
+            $path = 'storage/image/kompetensi/' . $image;
+            if(File::exists($path)){
+                File::delete($path);
+            }
             return $this->sendResponse(
-                $path = 'storage/image/kompetensi/' . $image;
-                if(File::exists($path)){
-                    File::delete($path);
-                }
                 new KompetensiResource($kompetensi->loadMissing('peserta:kompetensi_id')),
                 'Delete kompetensi successfully'
             );

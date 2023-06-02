@@ -89,6 +89,8 @@ class ListBimbelController extends BaseController
         }
     }
 
+    public 
+
     public function destroy($id)
     {
         try {
