@@ -17,10 +17,12 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    public $incrementing = false;
     protected $fillable = [
-        'nama_lengkap',
-        'email',
-        'password',
+        'id', 'email', 'npa_pgri', 'nik', 'nama_lengkap',
+        'nip', 'nuptk', 'gelar_depan', 'gelar_belakang',
+        'status_pegawai_id', 'jenis_pegawai_id', 'golongan_id',
+        'instansi', 'no_hp', 'jenis_kelamin_id', 'role_id' , 'gambar'
     ];
 
     /**

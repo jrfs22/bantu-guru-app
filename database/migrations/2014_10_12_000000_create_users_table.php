@@ -15,12 +15,11 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->text('email')->unique();
             $table->text('password')->nullable();
-            $table->string('npa_pgri')->unique();
-            $table->string('registrasi_bantu_guru');
+            $table->string('npa_pgri')->nullable();
             $table->string('nik');
             $table->text('nama_lengkap');
-            $table->string('nip');
-            $table->string('nuptk');
+            $table->string('nip')->nullable();
+            $table->string('nuptk')->nullable();
             $table->text('gelar_depan')->nullable();
             $table->text('gelar_belakang')->nullable();
             $table->uuid('status_pegawai_id')->nullable();
@@ -28,7 +27,6 @@ return new class extends Migration
             $table->uuid('golongan_id')->nullable();
             $table->string('instansi')->nullable();
             $table->string('no_hp');
-            $table->uuid('alamat_id');
             $table->uuid('jenis_kelamin_id');
             $table->uuid('role_id');
             $table->text('gambar');
@@ -41,7 +39,6 @@ return new class extends Migration
             $table->foreign('golongan_id')->references('id')->on('data_referensi');
             $table->foreign('jenis_kelamin_id')->references('id')->on('data_referensi');
             $table->foreign('role_id')->references('id')->on('data_referensi');
-            $table->foreign('alamat_id')->references('id')->on('alamat');
         });
     }
 

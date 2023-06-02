@@ -20,6 +20,7 @@ use App\Http\Controllers\api\LowonganKerjaController;
 */
 // Authentication routing
 Route::post('/login', [AuthenticationController::class, 'login']);
+Route::post('/register', [AuthenticationController::class, 'register']);
 
 // Lowongan kerja routing
 Route::get('/loker', [LowonganKerjaController::class, 'index']);
