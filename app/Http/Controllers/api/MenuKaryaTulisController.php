@@ -3,36 +3,33 @@
 namespace App\Http\Controllers\api;
 
 use Illuminate\Http\Request;
-use App\Models\api\ListBimbelModel;
 use Illuminate\Support\Facades\File;
+use App\Models\api\MenuKaryaTulisModel;
 use Illuminate\Database\QueryException;
 use App\Http\Controllers\BaseController;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Resources\ListBimbelResource;
+use App\Http\Resources\MenuKaryaTulisResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class ListBimbelController extends BaseController
+class MenuKaryaTulisController extends BaseController
 {
     public function index()
     {
-        try{
-            $list_bimbel = ListBimbelModel::all();
-            $data = ListBimbelResource::collection($list_bimbel->loadMissing([
-                'pengajar:id,list_bimbel_id,user_id',
-                'materi:id,list_bimbel_id'
-            ]));
-            if(count($list_bimbel) == 0){
+        try {
+            $menuKaryaTulis = MenuKaryaTulisModel::all();
+            $data = MenuKaryaTulisResource::collection($menuKaryaTulis->loadMissing('pembimbing:pembimbing_menu_id'));
+            if(count($menuKaryaTulis) == 0){
                 return $this->sendResponse(
                     $data,
-                    'table has no data'
+                    'Table has no data'
                 );
             }else{
                 return $this->sendResponse(
                     $data,
-                    'Data list bimbel found'
+                    'Data found'
                 );
             }
-        } catch(ModelNotFoundException | QueryException $exception){
+        } catch (ModelNotFoundException | QueryException $exception) {
             return $this->sendError(
                 'Error found',
                 $exception->getMessage()
@@ -43,12 +40,9 @@ class ListBimbelController extends BaseController
     public function getById($id)
     {
         try {
-            $list_bimbel = ListBimbelModel::findOrFail($id);
+            $menuKaryaTulis = MenuKaryaTulisModel::findOrFail($id);
             return $this->sendResponse(
-                new ListBimbelResource($list_bimbel->loadMissing([
-                    'pengajar:id,list_bimbel_id,user_id',
-                    'materi:id,list_bimbel_id'
-                ])),
+                new MenuKaryaTulisResource($menuKaryaTulis->loadMissing('pembimbing:id')),
                 'Data found'
             );
         } catch (ModelNotFoundException | QueryException $exception) {
@@ -62,7 +56,7 @@ class ListBimbelController extends BaseController
     public function store(Request $request)
     {
         $validated = Validator::make($request->all(), [
-            'nama' => 'required|string',
+            'nama' => 'required|unique:menu_pembimbing_karya_tulis,nama',
             'gambar' => 'required|image|mimes:jpeg,jpg,png|max:250'
         ]);
 
@@ -75,24 +69,21 @@ class ListBimbelController extends BaseController
 
         try {
             $newNameOfImage = $request->gambar->hashName();
-            $list_bimbel = ListBimbelModel::create([
+            $menuKaryaTulis = MenuKaryaTulisModel::create([
                 'nama' => $request->nama,
                 'gambar' => $newNameOfImage
             ]);
 
-            if($list_bimbel){
-                $request->gambar->move('storage/image/bimbel/list-bimbel', $newNameOfImage);
+            if($menuKaryaTulis){
+                $request->gambar->move('storage/image/karya-tulis/menu', $newNameOfImage);
                 return $this->sendResponse(
-                    new ListBimbelResource($list_bimbel->loadMissing([
-                        'pengajar:id,list_bimbel_id,user_id',
-                        'materi:id,list_bimbel_id'
-                    ])),
-                    'Create list bimbel successfully'
+                    new MenuKaryaTulisResource($menuKaryaTulis->loadMissing('pembimbing:id')),
+                    'Created menu pembimbing karya tulus successfully'
                 );
             }
         } catch (ModelNotFoundException | QueryException $exception) {
             return $this->sendError(
-                'Failed to create list bimbel',
+                'Error found',
                 $exception->getMessage()
             );
         }
@@ -110,76 +101,72 @@ class ListBimbelController extends BaseController
                 $validated->errors()
             );
         }
-        try{
-            $list_bimbel = ListBimbelModel::findOrFail($id);
-            $oldImage = $list_bimbel->gambar;
-            $updateListBimbel = [
+
+        try {
+            $menuKaryaTulis = MenuKaryaTulisModel::findOrFail($id);
+            $oldImage = $menuKaryaTulis->gambar;
+            $updateMenu = [
                 'nama' => $request->nama
             ];
-    
             if(!$request->hasFile('gambar')){
-                $list_bimbel->update($updateListBimbel);
+                $menuKaryaTulis->update($updateMenu);
             }else{
                 $newNameOfImage = $request->gambar->hashName();
                 $validated = Validator::make($request->all(), [
                     'gambar' => 'required|image|mimes:jpeg,jpg,png|max:250'
                 ]);
-
+    
                 if($validated->fails()){
                     return $this->sendError(
-                        'Validated Error',
+                        'Validate error',
                         $validated->errors()
                     );
                 }
 
-                $updateListBimbel['gambar'] = $newNameOfImage;
-                $list_bimbel->update($updateListBimbel);
-
-                if($list_bimbel){
-                    $path = 'storage/image/bimbel/list-bimbel/' . $oldImage;
+                $updateMenu['gambar'] = $newNameOfImage;
+                $menuKaryaTulis->update($updateMenu);
+                if($menuKaryaTulis){
+                    $path = 'storage/image/karya-tulis/menu/' . $oldImage;
                     if(File::exists($path)){
                         File::delete($path);
-                        $request->gambar->move('storage/image/bimbel/list-bimbel', $newNameOfImage);
+                        $request->gambar->move('storage/image/karya-tulis/menu', $newNameOfImage);
                     }
                 }
             }
 
             return $this->sendResponse(
-                new ListBimbelResource($list_bimbel->loadMissing([
-                    'pengajar:id,list_bimbel_id,user_id',
-                    'materi:id,list_bimbel_id'
-                ])),
-                'Update list bimble successfully'
+                'Update successfully',
+                new MenuKaryaTulisResource($menuKaryaTulis->loadMissing('pembimbing:id'))
             );
-        }catch(ModelNotFoundException | QueryException $exception){
+        } catch (ModelNotFoundException | QueryException $exception) {
             return $this->sendError(
-                'Id not found',
+                'Error found',
                 $exception->getMessage()
             );
         }
     }
+
     public function destroy($id)
     {
         try {
-            $list_bimbel = ListBimbelModel::findOrFail($id);
-            $image = $list_bimbel->gambar;
-            $list_bimbel->delete();
-            if($list_bimbel){
-                $path = 'storage/image/bimbel/list-bimbel/' . $image;
+            $menuKaryaTulis = MenuKaryaTulisModel::findOrFail($id);
+            $oldImage = $menuKaryaTulis->gambar;
+            $menuKaryaTulis->delete();
+
+            if($menuKaryaTulis){
+                $path = 'storage/image/karya-tulis/menu/' . $oldImage;
                 if(File::exists($path)){
                     File::delete($path);
                 }
-                return $this->sendResponse(
-                    new ListBimbelResource($list_bimbel->loadMissing([
-                        'pengajar:id,list_bimbel_id,user_id',
-                        'materi:id,list_bimbel_id'
-                    ])),
-                    'Delete list bimbel successfully'
-                );
             }
+
+            return $this->sendResponse(
+                'Delete successfully',
+                new MenuKaryaTulisResource($menuKaryaTulis->loadMissing('pembimbing:id'))
+            );
         } catch (ModelNotFoundException | QueryException $exception) {
             return $this->sendError(
-                'Failed to delete list bimbel',
+                'Id not found',
                 $exception->getMessage()
             );
         }

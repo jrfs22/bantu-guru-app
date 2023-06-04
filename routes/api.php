@@ -1,13 +1,17 @@
 <?php
 
 use App\Http\Controllers\api\AuthenticationController;
-use App\Http\Controllers\api\ListBimbelController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\DonasiController;
 use App\Http\Controllers\api\DonaturController;
 use App\Http\Controllers\api\KompetensiController;
+use App\Http\Controllers\api\ListBimbelController;
 use App\Http\Controllers\api\LowonganKerjaController;
+use App\Http\Controllers\api\MateriBimbelController;
+use App\Http\Controllers\api\MenuKaryaTulisController;
+use App\Http\Controllers\api\PembimbingKaryaTulisController;
+use App\Http\Controllers\api\PengajarBimbelController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,11 +56,38 @@ Route::delete('/kompetensi/{id}', [KompetensiController::class, 'destroy']);
 
 
 // Routing list bimbel
-Route::get('list-bimbel', [ListBimbelController::class, 'index']);
-Route::get('list-bimbel/{id}', [ListBimbelController::class, 'getById']);
-Route::post('list-bimbel', [ListBimbelController::class, 'store']);
-Route::put('list-bimbel/{id}', [ListBimbelController::class, 'update']);
-Route::delete('list-bimbel/{id}', [ListBimbelController::class, 'destroy']);
+Route::get('/list-bimbel', [ListBimbelController::class, 'index']);
+Route::get('/list-bimbel/{id}', [ListBimbelController::class, 'getById']);
+Route::post('/list-bimbel', [ListBimbelController::class, 'store']);
+Route::put('/list-bimbel/{id}', [ListBimbelController::class, 'update']);
+Route::delete('/list-bimbel/{id}', [ListBimbelController::class, 'destroy']);
+
+// Routing Pengajar bimbel
+Route::get('/pengajar-bimbel', [PengajarBimbelController::class, 'index']);
+Route::post('/pengajar-bimbel', [PengajarBimbelController::class, 'store']);
+Route::put('/pengajar-bimbel/{id}', [PengajarBimbelController::class, 'update']);
+
+// Routing materi bimbel
+Route::get('/materi-bimbel/{list_bimbel_id}/{user_id}', [MateriBimbelController::class, 'getById']);
+Route::post('/materi-bimbel/{list_bimbel_id}/{user_id}', [MateriBimbelController::class, 'store']);
+Route::put('/materi-bimbel/{id}', [MateriBimbelController::class, 'update']);
+Route::delete('/materi-bimbel/{id}', [MateriBimbelController::class, 'destroy']);
+
+
+// Routing Menu Karya Tulis
+Route::get('/menu-karya-tulis', [MenuKaryaTulisController::class, 'index']);
+Route::get('/menu-karya-tulis/{id}', [MenuKaryaTulisController::class, 'getById']);
+Route::post('/menu-karya-tulis', [MenuKaryaTulisController::class, 'store']);
+Route::put('/menu-karya-tulis/{id}', [MenuKaryaTulisController::class, 'update']);
+Route::delete('/menu-karya-tulis/{id}', [MenuKaryaTulisController::class, 'destroy']);
+
+// Routing Pembimbing Karya Tulis
+Route::get('/pembimbing-karya-tulis', [PembimbingKaryaTulisController::class, 'index']);
+// Route::get('/pembimbing-karya-tulis/{id}', [PembimbingKaryaTulisController::class, 'getById']);
+Route::post('/pembimbing-karya-tulis', [PembimbingKaryaTulisController::class, 'store']);
+// Route::put('/pembimbing-karya-tulis/{id}', [PembimbingKaryaTulisController::class, 'update']);
+Route::delete('/pembimbing-karya-tulis/{id}', [PembimbingKaryaTulisController::class, 'destroy']);
+
 
 Route::any('{url}', function(){
     return response()->json([

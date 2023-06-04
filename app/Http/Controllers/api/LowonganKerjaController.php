@@ -18,18 +18,18 @@ class LowonganKerjaController extends BaseController
         try{
             $lowongan_kerja = LowonganKerjaModel::all();
             $data = LowonganKerjaDetailResource::collection($lowongan_kerja->loadMissing([
-                'user:id,nama_lengkap,gelar_depan,gelar_belakang',
+                'user:id,nama_lengkap,gelar_depan,gelar_belakang,instansi,gambar',
                 'validasi:id,nama_lengkap,gelar_depan,gelar_belakang'
             ]));
             if(count($lowongan_kerja) == 0){
                 return $this->sendResponse(
-                    'table has no data',
-                    $data
+                    $data,
+                    'table has no data'
                 );
             }else{
                 return $this->sendResponse(
-                    'Data found',
-                    $data
+                    $data,
+                    'Data found'
                 );
             }
         }catch(ModelNotFoundException | QueryException $exception){
@@ -46,7 +46,7 @@ class LowonganKerjaController extends BaseController
             $lowongan_kerja = LowonganKerjaModel::findOrFail($id);
             return $this->sendResponse(
                 new LowonganKerjaDetailResource($lowongan_kerja->loadMissing([
-                    'user:id,nama_lengkap,gelar_depan,gelar_belakang',
+                    'user:id,nama_lengkap,gelar_depan,gelar_belakang,instansi,gambar',
                     'validasi:id,nama_lengkap,gelar_depan,gelar_belakang'
                 ])),
                 'Data found'
